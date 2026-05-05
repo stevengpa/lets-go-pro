@@ -1,0 +1,15 @@
+info:
+  name: snippet save
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: http://localhost:4000/snippet/create
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
