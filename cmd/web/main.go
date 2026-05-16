@@ -25,7 +25,7 @@ func main() {
 	flag.Parse()
 
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-		AddSource: true,
+		//AddSource: true,
 	}))
 
 	db, err := openDSN(*dsn)
