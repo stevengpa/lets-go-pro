@@ -2,8 +2,8 @@ CREATE DATABASE snippetbox CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 USE snippetbox;
 
+-- SNIPPETS TABLE
 
--- Create a `snippets` table.
 CREATE TABLE snippets (
                           id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
                           title VARCHAR(100) NOT NULL,
@@ -38,6 +38,8 @@ INSERT INTO snippets (title, content, created, expires) VALUES (
                                                                    DATE_ADD(UTC_TIMESTAMP(), INTERVAL 7 DAY)
                                                                );
 
+-- WEB USER
+
 CREATE USER 'web'@'%';
 -- Important: Make sure to swap 'pass' with a password of your own choosing.
 ALTER USER 'web'@'%' IDENTIFIED BY 'pass';
@@ -46,6 +48,8 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON snippetbox.* TO 'web'@'%';
 
 FLUSH PRIVILEGES;
 
+-- SESSIONS TABLE
+
 CREATE TABLE sessions (
                           token CHAR(43) PRIMARY KEY,
                           data BLOB NOT NULL,
@@ -53,3 +57,15 @@ CREATE TABLE sessions (
 );
 
 CREATE INDEX sessions_expiry_idx ON sessions (expiry);
+
+-- USERS TABLE
+
+CREATE TABLE users (
+                       id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                       name VARCHAR(255) NOT NULL,
+                       email VARCHAR(255) NOT NULL,
+                       hashed_password CHAR(60) NOT NULL,
+                       created DATETIME NOT NULL
+);
+
+ALTER TABLE users ADD CONSTRAINT users_uc_email UNIQUE (email);
