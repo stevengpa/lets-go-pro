@@ -34,7 +34,12 @@ openssl req -x509 -newkey rsa:2048 \
 ```bash
 docker compose -f doc/docker/compose.yml up -d   # MySQL
 go run ./cmd/web -addr=:4000
-# open http://localhost:4000
+```
+### open the below URL once tls certs were configured
+```bash
+https://localhost:4000
 ```
 
-SQL schema and seed data live in `doc/queries.sql`; API collection in `doc/bruno`.
+## Documentation
+- SQL schema and seed data live in `doc/queries.sql`; 
+- API collection in `doc/bruno`.
