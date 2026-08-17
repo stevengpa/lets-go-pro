@@ -1,6 +1,6 @@
 module github.com/stevengpa/lets-go-pro
 
-go 1.26.3
+go 1.26.5
 
 require (
 	github.com/go-sql-driver/mysql v1.10.0

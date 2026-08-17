@@ -15,6 +15,20 @@ A production-style web application built while working through **"Let's Go Pro"*
 
 `Go` `net/http` `MySQL` `html/template` `scs` (sessions) `alice` (middleware chaining) `Docker` (dev DB)
 
+### Generate Certs
+```bash
+mkdir -p tls
+```
+
+```bash
+openssl req -x509 -newkey rsa:2048 \
+  -nodes \
+  -keyout tls/key.pem \
+  -out tls/cert.pem \
+  -days 365 \
+  -subj "/CN=localhost"
+```
+
 ## How to run
 
 ```bash
