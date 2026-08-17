@@ -1,0 +1,8 @@
+{{define "title"}}Login{{end}}
+
+{{define main}}
+<form action="/user/login" method="POST" novalidate>
+    {{range .Form.NonFieldErrors}}
+    <div class="error"></div>
+    {{end}}
+</form>
