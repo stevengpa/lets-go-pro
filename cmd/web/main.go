@@ -19,12 +19,12 @@ import (
 )
 
 type application struct {
-	logger         *slog.Logger
-	snippets       *models.SnippetModel
-	users          *models.UserModel
-	templateCache  map[string]*template.Template
-	formDecoder    *form.Decoder
-	sessionManager *scs.SessionManager
+	logger         *slog.Logger                  `json:"logger,omitempty"`
+	snippets       *models.SnippetModel          `json:"snippets,omitempty"`
+	users          *models.UserModel             `json:"users,omitempty"`
+	templateCache  map[string]*template.Template `json:"template_cache,omitempty"`
+	formDecoder    *form.Decoder                 `json:"form_decoder,omitempty"`
+	sessionManager *scs.SessionManager           `json:"session_manager,omitempty"`
 }
 
 func main() {
@@ -66,21 +66,22 @@ func main() {
 	}
 
 	tlsConfig := &tls.Config{
-		CurvePreferences: []tls.CurveID{tls.X25519, tls.CurveP256},
+		MinVersion: tls.VersionTLS13,
 	}
 
 	srv := &http.Server{
-		Addr:         *addr,
-		Handler:      app.routes(),
-		ErrorLog:     slog.NewLogLogger(logger.Handler(), slog.LevelError),
-		TLSConfig:    tlsConfig,
-		IdleTimeout:  time.Minute,
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
+		Addr:                *addr,
+		Handler:             app.routes(),
+		ErrorLog:            slog.NewLogLogger(logger.Handler(), slog.LevelError),
+		TLSConfig:           tlsConfig,
+		IdleTimeout:         time.Minute,
+		ReadTimeout:         5 * time.Second,
+		WriteTimeout:        10 * time.Second,
+		MaxHeaderValueCount: 100,
 	}
 
 	logger.Info("starting server", slog.String("addr", srv.Addr))
-	err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
+	err = srv.ListenAndServeTLS("./assets/tls/cert.pem", "./assets/tls/key.pem")
 	logger.Error(err.Error())
 	os.Exit(1)
 }

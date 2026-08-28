@@ -1,5 +1,5 @@
 doc/docker/data
 data
-tls
+assets/tls
 .idea
 .idea/*.*

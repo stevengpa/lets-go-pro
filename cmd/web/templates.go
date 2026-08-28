@@ -27,7 +27,7 @@ var functions = template.FuncMap{
 func newTemplateCache() (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
 
-	pages, err := filepath.Glob("./ui/html/pages/*.tmpl.html")
+	pages, err := filepath.Glob("./assets/html/pages/*.tmpl.html")
 	if err != nil {
 		return nil, err
 	}
@@ -36,13 +36,13 @@ func newTemplateCache() (map[string]*template.Template, error) {
 		name := filepath.Base(page)
 
 		// base template to template set
-		ts, err := template.New(name).Funcs(functions).ParseFiles("./ui/html/base.tmpl.html")
+		ts, err := template.New(name).Funcs(functions).ParseFiles("./assets/html/base.tmpl.html")
 		if err != nil {
 			return nil, err
 		}
 
 		// partials to template set
-		ts, err = ts.ParseGlob("./ui/html/partials/*.tmpl.html")
+		ts, err = ts.ParseGlob("./assets/html/partials/*.tmpl.html")
 		if err != nil {
 			return nil, err
 		}
