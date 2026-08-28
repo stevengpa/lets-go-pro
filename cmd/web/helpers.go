@@ -51,23 +51,21 @@ func (app *application) clientError(w http.ResponseWriter, status int) {
 	http.Error(w, http.StatusText(status), status)
 }
 
-func (app *application) render(w http.ResponseWriter, r *http.Request, status int, page string, data templateData) {
+func (app *application) render(w http.ResponseWriter, r *http.Request, status int, page string, data templateData) error {
 	ts, ok := app.templateCache[page]
 	if !ok {
-		err := fmt.Errorf("the template %s does not exist", page)
-		app.serverError(w, r, err)
-		return
+		return fmt.Errorf("the template %s does not exist", page)
 	}
 
 	buf := new(bytes.Buffer)
 
 	err := ts.ExecuteTemplate(buf, "base", data)
 	if err != nil {
-		app.serverError(w, r, err)
-		return
+		return err
 	}
 
 	w.WriteHeader(status)
 
-	buf.WriteTo(w)
+	_, err = buf.WriteTo(w)
+	return err
 }

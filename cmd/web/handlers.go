@@ -33,7 +33,11 @@ type userLoginForm struct {
 func (app *application) userSignup(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 	data.Form = userSignupForm{}
-	app.render(w, r, http.StatusOK, "signup.tmpl.html", data)
+
+	err := app.render(w, r, http.StatusOK, "signup.tmpl.html", data)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
 }
 
 func (app *application) userSignupPost(w http.ResponseWriter, r *http.Request) {
@@ -55,19 +59,26 @@ func (app *application) userSignupPost(w http.ResponseWriter, r *http.Request) {
 	if !form.Valid() {
 		data := app.newTemplateData(r)
 		data.Form = form
-		app.render(w, r, http.StatusUnprocessableEntity, "signup.tmpl.html", data)
+		err := app.render(w, r, http.StatusUnprocessableEntity, "signup.tmpl.html", data)
+		if err != nil {
+			app.serverError(w, r, err)
+		}
 		return
 	}
 
 	err = app.users.Insert(form.Name, form.Email, form.Password)
 	if err != nil {
-		if errors.Is(err, models.ErrDuplicateEmail) {
+		switch {
+		case errors.Is(err, models.ErrDuplicateEmail):
 			form.AddFieldError("email", "Email address is already in use")
 
 			data := app.newTemplateData(r)
 			data.Form = form
-			app.render(w, r, http.StatusUnprocessableEntity, "signup.tmpl.html", data)
-		} else {
+			err = app.render(w, r, http.StatusUnprocessableEntity, "signup.tmpl.html", data)
+			if err != nil {
+				app.serverError(w, r, err)
+			}
+		default:
 			app.serverError(w, r, err)
 		}
 		return
@@ -81,7 +92,11 @@ func (app *application) userSignupPost(w http.ResponseWriter, r *http.Request) {
 func (app *application) userLogin(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 	data.Form = userLoginForm{}
-	app.render(w, r, http.StatusOK, "login.tmpl.html", data)
+
+	err := app.render(w, r, http.StatusOK, "login.tmpl.html", data)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
 }
 
 func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
@@ -102,7 +117,10 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 	data.Snippets = snippets
 
-	app.render(w, r, http.StatusOK, "home.tmpl.html", data)
+	err = app.render(w, r, http.StatusOK, "home.tmpl.html", data)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
 }
 
 func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
@@ -125,7 +143,10 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 	data.Snippet = snippet
 
-	app.render(w, r, http.StatusOK, "view.tmpl.html", data)
+	err = app.render(w, r, http.StatusOK, "view.tmpl.html", data)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
 }
 
 func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
@@ -135,7 +156,10 @@ func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
 		Expires: 365,
 	}
 
-	app.render(w, r, http.StatusOK, "create.tmpl.html", data)
+	err := app.render(w, r, http.StatusOK, "create.tmpl.html", data)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
 }
 
 func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request) {
@@ -156,7 +180,10 @@ func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request
 	if !form.Valid() {
 		data := app.newTemplateData(r)
 		data.Form = form
-		app.render(w, r, http.StatusUnprocessableEntity, "create.tmpl.html", data)
+		err = app.render(w, r, http.StatusUnprocessableEntity, "create.tmpl.html", data)
+		if err != nil {
+			app.serverError(w, r, err)
+		}
 		return
 	}
 
